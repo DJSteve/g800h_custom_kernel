@@ -131,7 +131,7 @@ static int __init init_cpufreq_transition_notifier_list(void)
 pure_initcall(init_cpufreq_transition_notifier_list);
 
 static int off __read_mostly;
-int cpufreq_disabled(void)
+static int cpufreq_disabled(void)
 {
 	return off;
 }
@@ -1562,6 +1562,10 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
 
 	pr_debug("target for CPU %u: %u kHz, relation %u\n", policy->cpu,
 		target_freq, relation);
+
+	if (target_freq == policy->cur)
+ 		return 0;
+
 	if (cpu_online(policy->cpu) && cpufreq_driver->target)
 		retval = cpufreq_driver->target(policy, target_freq, relation);
 
@@ -1911,14 +1915,14 @@ int cpufreq_set_gov(char *target_gov, unsigned int cpu)
 	} else {
 		cpu_policy = __cpufreq_cpu_get(cpu, 1);
 		if (!cpu_policy) {
-			put_online_cpus();
-			return -EINVAL;
+			val = per_cpu(cpufreq_policy_save, cpu).gov;
+			goto invalid;
 		}
 
 		if (lock_policy_rwsem_write(cpu) < 0) {
 			__cpufreq_cpu_put(cpu_policy, true);
-			put_online_cpus();
-			return -EINVAL;
+			val = per_cpu(cpufreq_policy_save, cpu).gov;
+			goto invalid;
 		}
 
 		ret = store_scaling_governor(cpu_policy, target_gov, ret);
@@ -1969,6 +1973,7 @@ char *cpufreq_get_gov(unsigned int cpu)
 
 		__cpufreq_cpu_put(policy, true);
 	}
+invalid:
 	put_online_cpus();
 	return val;
 }
