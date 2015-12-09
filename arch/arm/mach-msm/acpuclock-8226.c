@@ -78,7 +78,8 @@ static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p1[] = {
 	{ 1, 1401600, ACPUPLL, 5, 0,   CPR_CORNER_10,  0, 9 },
 	{ 1, 1497600, ACPUPLL, 5, 0,   CPR_CORNER_11,  0, 9 },
 	{ 1, 1593600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
-	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
+	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_13,  0, 9 },
+	{ 1, 1785600, ACPUPLL, 5, 0,   CPR_CORNER_14,  0, 9 },
 	{ 0 }
 };
 #ifdef CONFIG_USERSPACE_VOLTAGE_CONTROL
@@ -99,6 +100,7 @@ static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p2[] = {
 	{ 1, 1497600, ACPUPLL, 5, 0,   1280000,    1280000, 9 },
 	{ 1, 1593600, ACPUPLL, 5, 0,   1280000,    1280000, 9 },
         { 1, 1689600, ACPUPLL, 5, 0,   1280000,	   1280000, 9 },
+	{ 1, 1785600, ACPUPLL, 5, 0,   1280000,    1280000, 9 },
 	{ 0 }
 };
 /* Carlos Jesús (KLOZZ OR TEAMMEX@XDA-Developers)	
@@ -157,7 +159,8 @@ static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p6[] = {
 	{ 1, 1401600, ACPUPLL, 5, 0,   CPR_CORNER_10,  0, 9 },
 	{ 1, 1497600, ACPUPLL, 5, 0,   CPR_CORNER_11,  0, 9 },
 	{ 1, 1593600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
-	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
+	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_13,  0, 9 },
+	{ 1, 1785600, ACPUPLL, 5, 0,   CPR_CORNER_14,  0, 9 },
 	{ 0 }
 };
 
@@ -188,7 +191,7 @@ static struct acpuclk_drv_data drv_data = {
 #ifdef CONFIG_USERSPACE_VOLTAGE_CONTROL
 	.vdd_max_cpu = 1280000,
 #else
-	.vdd_max_cpu = CPR_CORNER_12,
+	.vdd_max_cpu = CPR_CORNER_14,
 #endif
 	.src_clocks = {
 		[PLL0].name = "gpll0",
@@ -287,4 +290,4 @@ static int __init acpuclk_a7_init(void)
 	return platform_driver_probe(&acpuclk_a7_driver, acpuclk_a7_probe);
 }
 device_initcall(acpuclk_a7_init);
-	
+
