@@ -378,8 +378,10 @@ enum {
 int get_max_freq(void);
 int get_min_freq(void);
 
-#define MAX_FREQ_LIMIT		get_max_freq() /* 1512000 */
-#define MIN_FREQ_LIMIT		get_min_freq() /* 384000 */
+//#define MAX_FREQ_LIMIT		get_max_freq() /* 1512000 */
+//#define MIN_FREQ_LIMIT		get_min_freq() /* 384000 */
+#define MAX_FREQ_LIMIT		1785600
+#define MIN_FREQ_LIMIT		192000
 #define MIN_TOUCH_LIMIT_SECOND 787200
 #define MIN_TOUCH_LIMIT		998400
 #define MIN_TOUCH_LIMIT_SECOND_9LEVEL	MIN_TOUCH_LIMIT
