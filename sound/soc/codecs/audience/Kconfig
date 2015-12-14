@@ -3,7 +3,7 @@ if SND_SOC_ES705
 menu "eS705 Bus Interface"
 
 config SND_SOC_ES705_SLIM
-	tristate "SLIMbus" if SLIMBUS
+	tristate "SLIMbus"
 
 config SND_SOC_ES705_I2C
 	tristate "I2C command bus"
@@ -38,7 +38,7 @@ if SND_SOC_ES515
 menu "eS515 Bus Interface"
 
 config SND_SOC_ES_SLIM
-	tristate "SLIMbus" if SLIMBUS
+	tristate "SLIMbus" 
 
 config SND_SOC_ES_I2C
 	tristate "I2C command bus"
