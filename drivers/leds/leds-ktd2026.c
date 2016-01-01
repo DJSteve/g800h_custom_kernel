@@ -83,8 +83,8 @@ __setup( "batt_id_value=0x", get_batt_id_value_cmdline );
 
 #define KTD2026_RESET		0x07
 
-#define LED_MAX_CURRENT		0x40
-#define LED_DEFAULT_CURRENT	0x40
+#define LED_MAX_CURRENT		0x60
+#define LED_DEFAULT_CURRENT	0x60
 #define LED_LOW_CURRENT		0x07
 #define LED_OFF			0x00
 
