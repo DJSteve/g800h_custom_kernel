@@ -76,8 +76,8 @@ static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p1[] = {
 	{ 1, 1401600, ACPUPLL, 5, 0,   CPR_CORNER_10,  0, 9 },
 	{ 1, 1497600, ACPUPLL, 5, 0,   CPR_CORNER_11,  0, 9 },
 	{ 1, 1593600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
-	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_13,  0, 9 },
-	{ 1, 1785600, ACPUPLL, 5, 0,   CPR_CORNER_14,  0, 9 },
+	{ 1, 1689600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
+	{ 1, 1785600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 9 },
 	{ 0 }
 };
 #ifdef CONFIG_USERSPACE_VOLTAGE_CONTROL

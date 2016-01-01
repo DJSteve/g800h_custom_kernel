@@ -517,20 +517,18 @@ if(mdp_reg_dump_en){
 }
 #endif
 #ifdef __KERNEL__
-	
+
 	spin_unlock_irqrestore(&xlock, flags);
 	mdss_mdp_clk_ctrl(MDP_BLOCK_POWER_OFF, false);
 
 #else
-        //Switch off clock 
+        //Switch off clock
 #endif
 	pr_debug("total mdp regs: %d\n",mdp_reg_count);
 }
 
 void dlog(struct _dlogdebug *desc, ...)
-{	
-	
-	
+{
 	va_list argp;
 
 	static u32 *buff = NULL;
