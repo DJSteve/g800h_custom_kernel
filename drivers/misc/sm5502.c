@@ -690,6 +690,29 @@ static DEVICE_ATTR(usb_sel, S_IRUGO | S_IWUSR ,
 				usbsel_show, usbsel_store);
 #endif
 
+unsigned int otg_status;
+static ssize_t otg_store(struct device *dev,
+			struct device_attribute *attr,
+			const char *buf, size_t len)
+{
+	unsigned long val;
+
+	if (kstrtoul(buf, 0, &val))
+		return -EINVAL;
+	if (!((val == 0) || (val == 1)))
+		return -EINVAL;
+
+	otg_status = val;
+
+	return len;
+}
+
+static ssize_t otg_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", otg_status);
+}
+
 static DEVICE_ATTR(control, S_IRUGO, sm5502_show_control, NULL);
 static DEVICE_ATTR(device_type, S_IRUGO, sm5502_show_device_type, NULL);
 static DEVICE_ATTR(switch, S_IRUGO | S_IWUSR,
@@ -698,11 +721,13 @@ static DEVICE_ATTR(usb_state, S_IRUGO, sm5502_show_usb_state, NULL);
 static DEVICE_ATTR(adc, S_IRUGO, sm5502_show_adc, NULL);
 static DEVICE_ATTR(reset_switch, S_IWUSR | S_IWGRP, NULL, sm5502_reset);
 static DEVICE_ATTR(attached_dev, S_IRUGO, sm5502_muic_show_attached_dev, NULL);
+static DEVICE_ATTR(otg, 0644, otg_show, otg_store);
 
 static struct attribute *sm5502_attributes[] = {
 	&dev_attr_control.attr,
 	&dev_attr_device_type.attr,
 	&dev_attr_switch.attr,
+	&dev_attr_otg.attr,
 	NULL
 };
 
@@ -1092,7 +1117,11 @@ static int sm5502_attach_dev(struct sm5502_usbsw *usbsw)
 			"dev1: 0x%x,dev2: 0x%x,dev3: 0x%x,Carkit: 0x%x,ADC: 0x%x,Jig: %s\n",
 			val1, val2, val3, val4, adc,
 			(check_sm5502_jig_state() ? "ON" : "OFF"));
-
+        if(otg_status)
+		{
+                val1 = 1;
+		otg_attached = 1;
+		}
 	/* USB */
 	if (val1 & DEV_USB) {
 		pr_info("[MUIC] USB Connected\n");
@@ -1780,6 +1809,7 @@ static int __devinit sm5502_probe(struct i2c_client *client,
 	/* initial cable detection */
 	INIT_DELAYED_WORK(&usbsw->init_work, sm5502_init_detect);
 	schedule_delayed_work(&usbsw->init_work, msecs_to_jiffies(2700));
+	otg_status = 0;
 
 	return 0;
 

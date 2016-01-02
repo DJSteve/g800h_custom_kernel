@@ -44,6 +44,9 @@ static struct workqueue_struct *cpu_boost_wq;
 
 static struct work_struct input_boost_work;
 
+static unsigned int cpu_boost = 0;
+module_param(cpu_boost, uint, 0644);
+
 static unsigned int boost_ms;
 module_param(boost_ms, uint, 0644);
 
@@ -247,6 +250,9 @@ static void cpuboost_input_event(struct input_handle *handle,
 {
 	u64 now;
 
+	if (!cpu_boost)
+		return;
+
 	if (!input_boost_freq)
 		return;
 
@@ -259,6 +265,16 @@ static void cpuboost_input_event(struct input_handle *handle,
 
 	queue_work(cpu_boost_wq, &input_boost_work);
 	last_input_time = ktime_to_us(ktime_get());
+}
+
+bool check_cpuboost(int cpu)
+{
+       struct cpu_sync *i_sync_info;
+       i_sync_info = &per_cpu(sync_info, cpu);
+
+       if (i_sync_info->input_boost_min > 0)
+               return true;
+       return false;
 }
 
 static int cpuboost_input_connect(struct input_handler *handler,
