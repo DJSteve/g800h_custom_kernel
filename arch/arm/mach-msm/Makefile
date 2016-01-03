@@ -1,4 +1,6 @@
 CFLAGS_scm.o :=$(call as-instr,.arch_extension sec,-DREQUIRES_SEC=1)
+KBUILD_CFLAGS   += -Wno-error=implicit-function-declaration
+#KBUILD_CFLAGS   += -Wimplicit-function-declaration
 
 obj-y += io.o dma.o memory.o
 ifndef CONFIG_ARM_ARCH_TIMER
@@ -521,3 +523,4 @@ obj-$(CONFIG_GSM_MODEM_SPRD6500) += board-sprd6500-spi.o board-sprd6500-modems.o
 
 obj-$(CONFIG_BRICKED_HOTPLUG) += bricked_hotplug.o
 obj-$(CONFIG_MSM_HOTPLUG) += msm_hotplug.o
+obj-$(CONFIG_ALUCARD_HOTPLUG) += alucard_hotplug.o
