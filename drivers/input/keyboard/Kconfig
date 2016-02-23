@@ -18,11 +18,19 @@ config KEYBOARD_ABOV_TOUCH
 	help
 	  Say Y here if you want to use ABOV MC96FT16XX chip as touchkey.
 
-config KEYBOARD_ABOV_TOUCH_PATEK
-	tristate "Abov FT16XX touchkey"
-	depends on I2C
+config KEYBOARD_ABOV_DUAL_DETECT
+	bool "Abov FT16XX Touchkey Dual Detect"
+	depends on KEYBOARD_ABOV_TOUCH
+	default n
 	help
-	  Say Y here if you want to use ABOV MC96FT16XX chip as touchkey.
+	  Choose if samsungs added 'dual detect' mode of the abov_touch driver is enabled, needs to be disabled for custom roms 
+
+#
+#config KEYBOARD_ABOV_TOUCH_PATEK
+#	tristate "Abov FT16XX touchkey"
+#	depends on I2C
+#	help
+#	  Say Y here if you want to use ABOV MC96FT16XX chip as touchkey.
 
 config INPUT_ENABLED
 	bool "Input enabled suspend resume"
