@@ -10,8 +10,9 @@
  * GNU General Public License for more details.
  */
 
-/include/ "msm8226-camera-sensor-mtp-atlantic_eur.dtsi"
-/include/ "dsi_panel_magna_octa_720p_video_kmini3g_00.dtsi"
+/include/ "msm8226-camera-sensor-mtp-atlantic3G-rev01.dtsi"
+/include/ "dsi_panel_magna_octa_720p_video_kmini3g_02.dtsi"
+/include/ "msm8928-kmini-w1.dtsi"
 /include/ "msm8228-sec-atlantic3g-battery-data.dtsi"
 
 &rpm_bus {
@@ -49,17 +50,6 @@
 		};
 	};
 
-	i2c@f9928000 {	 /*BLSP-1 QUP-6*/
-		compatible = "qcom,i2c-qup";
-		qcom,scl-gpio = <&msmgpio 23 0>;
-		qcom,sda-gpio = <&msmgpio 22 0>;
-		max98504@31 {
-			compatible = "max98504";
-			reg = <0x31>;
-			vcc_i2c-supply = <&pm8226_l6>;
-			max98504,i2c-pull-up;
-		};
-	};	/*CONFIG_SND_SOC_MAX98504*/
 
 
 	i2c@15{ /*SM5502 MUIC Chip node */
@@ -85,14 +75,13 @@
                 };
         };
 
-
 	i2c@22 { /*MC96FR332/MC96FR116 IRDA Controller IC node*/
 		 /*Drvier file: drivers/irda/ir_remote_kmini.c*/
 		 /*CONFIG_IR_REMOCON_KMINI*/
 		cell-index = <22>;
                 compatible = "i2c-gpio";
-                gpios = <&msmgpio 22 0 /* sda */
-                         &msmgpio 23 0 /* scl */
+                gpios = <&msmgpio 14 0 /* sda */
+                         &msmgpio 15 0 /* scl */
                          >;
                 i2c-gpio,delay-us = <2>;
                 #address-cells = <1>;
@@ -103,12 +92,12 @@
                         reg = <0x50>;
                         interrupt-parent = <&msmgpio>;
                         vled_3.3v-supply = <&pm8226_l15>;
-                        interrupts = <56 0>;
-			mc96fr332,irda_irq_gpio = <&msmgpio 56 0x00>;
-                        mc96fr332,irda_wake = <&msmgpio 49 0x00>;
-			mc96fr332,irda_poweron = <&msmgpio 114 0x00>;
-			mc96fr332,scl-gpio = <&msmgpio 23 0x00>;
-			mc96fr332,sda-gpio = <&msmgpio 22 0x00>;
+                        interrupts = <49 0>;
+			mc96fr332,irda_irq_gpio = <&msmgpio 49 0x00>;
+                        mc96fr332,irda_wake = <&msmgpio 56 0x00>;
+			mc96fr332,irda_poweron = <&msmgpio 1 0x00>;
+			mc96fr332,scl-gpio = <&msmgpio 15 0x00>;
+			mc96fr332,sda-gpio = <&msmgpio 14 0x00>;
 		};
 
 		touchkey@20{
@@ -116,11 +105,11 @@
 			reg = <0x20>;
 			interrupt-parent = <&msmgpio>;
 			interrupts = <31 0>;
-			abov,sda-gpio = <&msmgpio 22 0>;
-			abov,scl-gpio = <&msmgpio 23 0>;
+			abov,sda-gpio = <&msmgpio 14 0>;
+			abov,scl-gpio = <&msmgpio 15 0>;
 			abov,irq-gpio = <&msmgpio 31 0>;
-			abov,rst-gpio = <&msmgpio 38 0>;
-			abov,tkey_en-gpio = <&msmgpio 110 0>;
+			abov,rst-gpio = <&pm8226_gpios 8 0x01>; /*Touch Key LDO En gpio*/
+			abov,tkey_en-gpio = <&msmgpio 116 0>;
 			vddo-supply = <&pm8226_l6>;
 			avdd-supply = <&pm8226_l19>;
 		};
@@ -164,18 +153,6 @@
 			HSCDTD008-i2c,reg_vdd = "8226_l19";
 			HSCDTD008-i2c,reg_vio = "8226_lvs1";
 		};
-
-		taos@39 {
-			compatible = "taos,tmd27723";
-			reg = <0x39>;
-			interrupt-parent = <&msmgpio>;
-			interrupts = <65 0>;
-			taos,irq_gpio = <&msmgpio 65 0>;
-			taos,en = <&pm8226_gpios 2 0x00>;
-			taos,prox_cal_path = "/efs/prox_cal";
-			taos,vdd_2p85 = "8226_l19";
-			taos,vdd_1p8 = "8226_lvs1";
-		};
 	};
 	i2c@f9925000 {
 		compatible = "qcom,i2c-qup";
@@ -189,24 +166,69 @@
 			interrupts = <63 0>;
 			adpd142,irq_gpio = <&msmgpio 63 0>;
 			adpd142,vdd_1p8 = "8226_l6";
+			reg_vled-supply = <&pm8226_l15>;
+		};
+		cm36686@60 {
+			compatible = "cm36686";
+			reg = <0x60>;
+			interrupt-parent = <&msmgpio>;
+			interrupts = <65 0>;
+			cm36686,irq_gpio = <&msmgpio 65 0x1>;
+			cm36686,leden_gpio = <&msmgpio 0 0>;
+			cm36686,default_hi_thd = <14>;
+			cm36686,default_low_thd = <9>;
+			cm36686,cancel_hi_thd = <10>;
+			cm36686,cancel_low_thd = <5>;
+			reg_vdd-supply = <&pm8226_l19>;
+			reg_vio-supply = <&pm8226_lvs1>;
+			status = "okay";
 		};
 	};
 
-	i2c@20 {
-		cell-index = <20>;
-		compatible = "i2c-gpio";
-		gpios = <&msmgpio 34 0 /* sda */
-			&msmgpio 33 0 /* scl */>;
+	spi@f9928000 {
+		compatible = "qcom,spi-qup-v2";
+		cell-index = <6>;
+		reg = <0xf9928000 0x1000>,
+			<0xf9904000 0x19000>;
+		reg-names = "spi_physical", "spi_bam_physical";
+		interrupt-names = "spi_irq", "spi_bam_irq";
+		interrupts = <0 100 0>, <0 238 0>;
+		spi-max-frequency = <19200000>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		qcom,gpio-mosi = <&msmgpio 20 0>;
+		qcom,gpio-miso = <&msmgpio 21 0>;
+		qcom,gpio-cs0  = <&msmgpio 22 0>;
+		qcom,gpio-clk  = <&msmgpio 23 0>;
 
-		actuator0: qcom,actuator@50 {
-			compatible = "qcom,actuator";
-			cell-index = <0>;
-			reg = <0x50>;
-		};
-		actuator1: qcom,actuator@36 {
-			compatible = "qcom,actuator";
-			cell-index = <1>;
-			reg = <0x36>;
+		qcom,infinite-mode = <0>;
+		qcom,use-bam;
+		qcom,ver-reg-exists;
+		qcom,bam-consumer-pipe-index = <22>;
+		qcom,bam-producer-pipe-index = <23>;
+
+		qcom,master-id = <86>;
+		vfsspi-spi@0 {
+			compatible = "vfsspi,vfs61xx";
+			reg = <0>;
+			spi-max-frequency = <19200000>;
+			vfsspi-sleepPin = <&msmgpio 114 0x00>;
+			vfsspi-drdyPin = <&msmgpio 62 0x01>;
+			vfsspi-ldoPin = <&pm8226_mpps 4 0x00>; /* 1.8V enable */
+			vfsspi-ldoPin2 = <&pm8226_mpps 7 0x00>; /* 3.3V enable */
+/*			vfsspi-ocpflag = <&msmgpio 38 0x00>;*/
+			vfsspi-ocpen = <&pm8226_gpios 2 0x00>;
+			vfsspi-mosipin = <20>;
+			vfsspi-misopin = <21>;
+			vfsspi-cspin = <22>;
+			vfsspi-clkpin = <23>;
+			vfsspi-set_altfunc = <1>; /* for spi alternative function number */
+			vfsspi-mosi_alt = <1>;
+			vfsspi-miso_alt = <1>;
+			vfsspi-cs_alt = <1>;
+			vfsspi-clk_alt = <1>;
+			vfsspi-orient = <0>;
+			vfsspi-ldocontrol= <1>;
 		};
 	};
 
@@ -269,7 +291,7 @@
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 		};
-
+/*
 		vol_down {
 			label = "volume_down";
 			gpios = <&msmgpio 107 0x1>;
@@ -278,7 +300,7 @@
 			gpio-key,wakeup;
 			debounce-interval = <15>;
 		};
-
+*/
 		vol_up {
 			label = "volume_up";
 			gpios = <&msmgpio 106 0x1>;
@@ -316,8 +338,8 @@
 			"MIC BIAS1 External", "Handset Mic",
 			"AMIC2", "MIC BIAS2 External",
 			"MIC BIAS2 External", "Headset Mic",
-			"AMIC3", "MIC BIAS3 External",
-			"MIC BIAS3 External", "Sub Mic",
+			"AMIC3", "MIC BIAS1 External",
+			"MIC BIAS1 External", "Sub Mic",
 			"AMIC4", "MIC BIAS2 External",
 			"MIC BIAS2 External", "ANCRight Headset Mic",
 			"AMIC5", "MIC BIAS2 External",
@@ -331,28 +353,28 @@
                 compatible = "qcom,msm-mem-hole";
                 qcom,memblock-remove = <0x08400000 0x2f00000 /* MODEM */
                                         0x0c300000 0x100000 /* MBA */
-                                        0x0ca00000 0x2c00000 /* Reserve 8MB for TZ apps,7 MB for WCNSS, 29 MB for ADSP + VENUS*/
+                                        0x0d200000 0x2400000 /* WCNSS, ADSP & Venus */
                                         0x0fa00000 0x500000 /* Address and Size of Hole */
-                                        0x10000000 0x600000>; /* Reserve 6MB for TIMA logging */
+                                        0x10000000 0x600000 /* Reserve 6MB for TIMA logging */
+                                        0x3f400000 0x800000>; /* Reserve 8MB for TZ apps */
         };
 
 	qcom,qseecom@d980000 {
 		compatible = "qcom,qseecom";
-		reg = <0x0ca00000 0x800000>;
+		reg = <0x3f400000 0x800000>;
 		reg-names = "secapp-region";
 		qcom,disk-encrypt-pipe-pair = <2>;
 		qcom,hlos-ce-hw-instance = <0>;
 		qcom,qsee-ce-hw-instance = <0>;
-		qcom,support-bus-scaling;
 		qcom,msm-bus,name = "qseecom-noc";
 		qcom,msm-bus,num-cases = <4>;
 		/* qcom,msm-bus,active-only = <0>; */
 		qcom,msm-bus,num-paths = <1>;
 		qcom,msm-bus,vectors-KBps =
 				<55 512 0 0>,
-				<55 512 0 0>,
-				<55 512 120000 1200000>,
-				<55 512 393600 3936000>;
+				<55 512 3936000 393600>,
+				<55 512 3936000 393600>,
+				<55 512 3936000 393600>;
 	};
 };
 
@@ -482,6 +504,51 @@
 };
 
 &spmi_bus {
+	qcom,pm8226@0 {
+		qcom,power-on@800 {
+			compatible = "qcom,qpnp-power-on";
+			reg = <0x800 0x100>;
+			interrupts = <0x0 0x8 0x0>,
+				     <0x0 0x8 0x1>,
+				     <0x0 0x8 0x4>,
+				     <0x0 0x8 0x5>;
+			interrupt-names = "kpdpwr", "resin",
+					"resin-bark", "kpdpwr-resin-bark";
+			qcom,pon-dbc-delay = <15625>;
+			qcom,system-reset;
+			qcom,s3-debounce = <128>;
+
+			qcom,pon_1 {
+				qcom,pon-type = <0>;
+				qcom,pull-up = <1>;
+				linux,code = <116>;
+				qcom,disable-reset = <1>;
+				qcom,s1-timer = <6720>;
+				qcom,s2-timer = <1000>;
+				qcom,s2-type = <7>;
+			};
+
+			qcom,pon_2 {
+				qcom,pon-type = <1>;
+				qcom,pull-up = <1>;
+				linux,code = <114>;
+				qcom,disable-reset = <1>;
+				qcom,s1-timer = <6720>;
+				qcom,s2-timer = <2000>;
+				qcom,s2-type = <7>;
+			};
+
+			qcom,pon_3 {
+				qcom,pon-type = <3>;
+				qcom,support-reset = <1>;
+				qcom,pull-up = <1>;
+				qcom,s1-timer = <10256>;
+				qcom,s2-timer = <1000>;
+				qcom,s2-type = <7>;
+				qcom,use-bark;
+			};
+		};
+	};
 	qcom,pm8226@1 {
                 qcom,leds@d300 {
                         status = "okay";
@@ -527,7 +594,7 @@
 		qcom,pull = <5>;
 		qcom,vin-sel = <3>;
 		qcom,out-strength = <3>;
-		qcom,src-sel = <2>;
+		qcom,src-sel = <0>;
 		qcom,master-en = <1>;
 	};
 
@@ -594,6 +661,7 @@
 		qcom,out-strength = <3>; /*QPNP_PIN_OUT_STRENGTH_HIGH*/
 		qcom,master-en = <1>;
 		qcom,src-sel = <0>; /* Function constant */
+		qcom,vin-sel = <3>; /* QPNP_PIN_VIN3, 1.8V */
 	};
 
 	mpp@a400 { /* MPP 5 */
@@ -614,6 +682,12 @@
 	};
 
 	mpp@a600 { /* MPP 7 */
+		qcom,mode = <1>; /*QPNP_PIN_MODE_DIG_OUT */
+		qcom,invert = <1>; /* Enable MPP */
+		qcom,out-strength = <3>; /*QPNP_PIN_OUT_STRENGTH_HIGH*/
+		qcom,master-en = <1>;
+		qcom,src-sel = <0>; /* Function constant */
+		qcom,vin-sel = <3>; /* QPNP_PIN_VIN3, 1.8V */
 	};
 
 	mpp@a700 { /* MPP 8 */
@@ -712,6 +786,7 @@
 
 &slim_msm {
 	tapan_codec {
+		qcom,cdc-reset-gpio = <&msmgpio 36 0>;
 		qcom,cdc-micbias1-ext-cap;
 		qcom,cdc-micbias-cfilt1-mv = <2800>;
 		qcom,cdc-micbias-cfilt2-mv = <2800>;

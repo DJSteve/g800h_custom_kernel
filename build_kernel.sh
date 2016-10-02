@@ -2,8 +2,6 @@
 
 export ARCH=arm
 export GPU_SYSFS_TARGET_FILE_DEFINED=1
-#export CROSS_COMPILE=/opt/toolchains/arm-cortex_a7-linux-gnueabihf-linaro_4.9.4-2015.06/bin/arm-eabi-
-export CROSS_COMPILE=/opt/toolchains/hyper-linaro-arm-eabi-5.1/bin/arm-eabi-
 
 mkdir output
 

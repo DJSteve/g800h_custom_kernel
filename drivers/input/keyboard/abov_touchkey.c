@@ -92,6 +92,8 @@ struct device *sec_touchkey;
 #define ABOV_DUAL_DETECTION_CMD_FW_VER	0x14
 #endif
 
+#else
+
 #define FW_VERSION 0x06
 
 #ifdef CONFIG_KEYBOARD_ABOV_DUAL_DETECT
